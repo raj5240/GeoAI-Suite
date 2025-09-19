@@ -64,8 +64,8 @@ MONGODB
 # Redis (optional)
 REDIS
 
+#🚀 Getting Started
 
-🚀 Getting Started
 1. Clone the repo
 git clone https://github.com/your-username/GeoAI-Suite.git
 cd GeoAI-Suite
