@@ -64,6 +64,8 @@ MongoB
 # Redis (optional)
 REDIS
 
+---
+
 ## 📂 Folder Structure
 
 ```bash
