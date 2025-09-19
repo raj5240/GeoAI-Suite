@@ -54,22 +54,17 @@ It is built for **researchers, urban planners, GIS analysts, and innovators** wh
 
 ---
 
-### ⚙️ Configuration  
+⚙️ Configuration
 
-Set environment variables in a `.env` file:  
+Set environment variables in a .env file:
 
-```bash
 # Database
-MongoB
+MONGODB_URI=mongodb://localhost:27017/geoai
+
 # Redis (optional)
-REDIS
+REDIS_URL=redis://localhost:6379
 
----
-
-## 📂 Folder Structure
-
-```bash
-
+📂 Folder Structure
 GeoAI-Suite/
 │
 ├── backend/                     # Backend APIs and AI processing
@@ -128,3 +123,23 @@ GeoAI-Suite/
 ├── package.json                 # Frontend dependencies
 └── README.md                    # Project overview and instructions
 
+🚀 Getting Started
+1. Clone the repo
+git clone https://github.com/your-username/GeoAI-Suite.git
+cd GeoAI-Suite
+
+2. Backend setup
+cd backend
+pip install -r requirements.txt
+uvicorn app:app --reload
+
+3. Frontend setup
+cd frontend
+npm install
+npm start
+
+4. (Optional) Run with Docker
+docker-compose up --build
+
+🧪 Running Tests
+pytest tests/
