@@ -1,9 +1,10 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from services.vector_service import load_vector_data, save_vector
-from services.raster_service import process_raster_data, calculate_ndvi
-from services.topology_service import build_topology
-from services.raster_to_vector import raster_to_vector_from_tif
+from .services.vector_service import load_vector_data, save_vector
+from .services.raster_service import process_raster_data, calculate_ndvi
+from .services.topology_service import build_topology
+from .services.raster_to_vector import raster_to_vector_from_tif
+
 
 app = FastAPI(title="GeoAI Suite Backend")
 
