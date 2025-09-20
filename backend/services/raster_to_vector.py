@@ -1,28 +1,34 @@
+import rasterio
+import numpy as np
 import geopandas as gpd
-import networkx as nx
-from shapely.geometry import LineString, Point
+from shapely.geometry import shape, Polygon, mapping
+from rasterio.features import shapes
+import json, os
 
-def build_topology(file_path: str):
-    
+def raster_to_vector_from_tif(tif_path: str, out_geojson: str = "data/generated/generated.geojson", band=1, threshold=None):
+    """
+    Simple raster-to-vector conversion by thresholding a band and extracting shapes.
+    This is a deterministic, non-AI baseline to produce polygons from raster masks.
+    """
     try:
-        gdf = gpd.read_file(file_path)
-        G = nx.Graph()
-        for idx, row in gdf.iterrows():
-            geom = row.geometry
-            if geom is None:
-                continue
-            if isinstance(geom, LineString):
-                coords = list(geom.coords)
-                for a, b in zip(coords[:-1], coords[1:]):
-                    G.add_edge(tuple(a), tuple(b))
-            else:
-                try:
-                    for part in geom:
-                        coords = list(part.coords)
-                        for a, b in zip(coords[:-1], coords[1:]):
-                            G.add_edge(tuple(a), tuple(b))
-                except Exception:
-                    continue
-        return {"num_nodes": G.number_of_nodes(), "num_edges": G.number_of_edges()}
+        with rasterio.open(tif_path) as src:
+            arr = src.read(band)
+            
+            if threshold is None:
+                threshold = float(arr.mean())
+            mask = arr > threshold
+
+            transform = src.transform
+            results = []
+            for geom, val in shapes(mask.astype('uint8'), mask=mask, transform=transform):
+                if val == 1:
+                    results.append(geom)
+
+        
+        geoms = [shape(g) for g in results]
+        gdf = gpd.GeoDataFrame(geometry=geoms, crs=src.crs)
+        os.makedirs(os.path.dirname(out_geojson), exist_ok=True)
+        gdf.to_file(out_geojson, driver="GeoJSON")
+        return {"saved": out_geojson, "features": len(gdf)}
     except Exception as e:
         return {"error": str(e)}
